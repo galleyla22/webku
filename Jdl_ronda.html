@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jadwal Ronda Malam</title>
+
+  <!-- Background Malam -->
+  <style>
+    *{margin:0;box-sizing:border-box}
+    body{
+      height:100vh;
+      background:radial-gradient(ellipse at bottom,#1b2735 0%,#090a0f 100%);
+      font-family:sans-serif;color:#fff;
+      padding: 20px;
+    }
+
+    .bulan{
+      position:absolute;top:40px;left:60px;
+      width:110px;height:110px;border-radius:50%;
+      background:radial-gradient(circle at 30% 30%,#fffbcf 0%,#ffd55c 40%,#f4b942 70%,transparent 100%);
+      box-shadow:0 0 60px 15px rgba(255,224,128,.8);
+    }
+
+    .bintang{
+      position:absolute;border-radius:50%;
+      width:2px;height:2px;background:#fff;
+      animation:bintang 6s linear infinite;
+    }
+    @keyframes bintang{
+      0%{transform:translateY(0);opacity:1}
+      100%{transform:translateY(100vh);opacity:0}
+    }
+
+    .kampung{
+      position:absolute;bottom:0;width:100%;height:160px;
+      background:linear-gradient(to top,#1a1a1a 0%,#262626 60%,transparent 100%);
+      overflow:visible;
+    }
+
+    .pohon{
+      position:absolute;bottom:0;
+      width:12px;height:40px;background:#4d3319;
+    }
+    .pohon::before{
+      content:"";
+      position:absolute;bottom:30px;left:50%;
+      transform:translateX(-50%);
+      width:0;height:0;
+      border-left:35px solid transparent;
+      border-right:35px solid transparent;
+      border-bottom:70px solid #0e3e21;
+      filter:drop-shadow(0 0 6px #0e3e21);
+    }
+
+    .ronda{
+      position:absolute;bottom:40px;left:-80px;
+      width:40px;height:80px;
+      animation:patroli 22s linear infinite;
+    }
+    .ronda .badan{
+      position:absolute;bottom:0;
+      width:40px;height:50px;background:#0f9;
+      border-radius:4px;
+    }
+    .ronda .kepala{
+      position:absolute;bottom:54px;left:50%;
+      transform:translateX(-50%);
+      width:26px;height:26px;border-radius:50%;
+      background:#ffe0bd;
+    }
+    .ronda .tongkat{
+      position:absolute;bottom:10px;right:-4px;
+      width:6px;height:50px;background:#caa472;
+    }
+    @keyframes patroli{
+      0%  {transform:translateX(-80px) scaleX(1)}
+      49% {transform:translateX(calc(100vw + 80px)) scaleX(1)}
+      50% {transform:translateX(calc(100vw + 80px)) scaleX(-1)}
+      99% {transform:translateX(-80px) scaleX(-1)}
+      100%{transform:translateX(-80px) scaleX(1)}
+    }
+
+    /* Gaya Tabel */
+    h1 {
+      text-align: center;
+      color: #fff;
+      margin-top: 120px;
+    }
+
+    table {
+      width: 100%;
+      max-width: 700px;
+      margin: 20px auto;
+      border-collapse: collapse;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      background-color: rgba(255,255,255,0.1);
+      color: #fff;
+      backdrop-filter: blur(5px);
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border: 1px solid rgba(255,255,255,0.3);
+      text-align: center;
+    }
+
+    th {
+      background-color: rgba(0,100,0,0.8);
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255,255,255,0.05);
+    }
+
+    tr:hover {
+      background-color: rgba(255,255,255,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Elemen -->
+  <div class="bulan"></div>
+  <div class="kampung"></div>
+  <div class="ronda">
+    <div class="kepala"></div>
+    <div class="badan"></div>
+    <div class="tongkat"></div>
+  </div>
+
+  <!-- Judul dan Tabel -->
+  <h1>Jadwal Ronda Malam</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Hari</th>
+        <th>Petugas Ronda</th>
+        <th>Petugas Ronda</th>
+        <th>Petugas Ronda</th>
+        <th>Petugas Ronda</th>
+        <th>Petugas Ronda</th>
+        <th>Petugas Ronda</th>
+        <th>Petugas Ronda</th>
+        <th>Petugas Ronda</th>
+        <th>Petugas Ronda</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Malam Senin</td>
+        <td>Budi</td><td>Andi</td><td>Badul</td><td>Jaja</td><td>Wisnu</td><td>Restu</td><td>Amar</td><td>Karta</td><td>Pura, Jalu</td>
+      </tr>
+      <tr><td>Malam Selasa</td><td>Rudi</td><td>Denis</td><td colspan="7"></td></tr>
+      <tr><td>Malam Rabu</td><td>parjamban<td>kecep</td><td>Dedi</td><td colspan="7"></td></tr>
+      <tr><td>Malam Kamis</td><td>Ujang</td><td>Dani</td><td colspan="7"></td></tr>
+      <tr><td>Malam Jumat</td><td>Aldi<td>perdana<td>Fajar</td><td>Yusuf</td><td colspan="7"></td></tr>
+      <tr><td>Malam Sabtu</td><td>Asep</td><td>Jaka</td><td colspan="7"></td></tr>
+      <tr><td>Malam Minggu</td><td>bombom<td>Reza</td><td>adut</td><td colspan="7"></td></tr>
+    </tbody>
+  </table>
+
+  <!-- Script Animasi -->
+  <script>
+    // Bintang
+    for (let i=0;i<120;i++){
+      const b=document.createElement('div');
+      b.className='bintang';
+      b.style.left=Math.random()*innerWidth+'px';
+      b.style.top=Math.random()*innerHeight+'px';
+      b.style.opacity=Math.random();
+      b.style.animationDuration=(Math.random()*3+3)+'s';
+      document.body.appendChild(b);
+    }
+
+    // Pepohonan
+    const pohonCount=15;
+    const zona=document.querySelector('.kampung');
+    for(let i=0;i<pohonCount;i++){
+      const p=document.createElement('div');
+      p.className='pohon';
+      p.style.left=(i*(100/pohonCount)+Math.random()*4)+'vw';
+      p.style.height=(40+Math.random()*40)+'px';
+      p.style.transform=`scale(${0.8+Math.random()*0.6})`;
+      zona.appendChild(p);
+    }
+  </script>
+
+</body>
+</html>
