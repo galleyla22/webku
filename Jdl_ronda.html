@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Jadwal ronda malam Kampung Pameutingan, informasi petugas ronda setiap hari.">
+  <title>Jadwal Ronda Malam</title>
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      overflow-x: hidden;
+    }
+
+    body {
+      height: 100vh;
+      max-width: 100vw;
+      overflow-x: hidden;
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      padding: 20px;
+    }
+
+    .bulan {
+      position: absolute;
+      top: 40px;
+      left: 60px;
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fffbcf 0%, #ffd55c 40%, #f4b942 70%, transparent 100%);
+      box-shadow: 0 0 60px 15px rgba(255, 224, 128, 0.8);
+    }
+
+    .bintang {
+      position: absolute;
+      border-radius: 50%;
+      width: 2px;
+      height: 2px;
+      background: #fff;
+      animation: bintang 6s linear infinite;
+    }
+
+    @keyframes bintang {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
+
+    .kampung {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 160px;
+      background: linear-gradient(to top, #1a1a1a 0%, #262626 60%, transparent 100%);
+      overflow: visible;
+    }
+
+    .pohon {
+      position: absolute;
+      bottom: 0;
+      width: 12px;
+      height: 40px;
+      background: #4d3319;
+    }
+
+    .pohon::before {
+      content: "";
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 35px solid transparent;
+      border-right: 35px solid transparent;
+      border-bottom: 70px solid #0e3e21;
+      filter: drop-shadow(0 0 6px #0e3e21);
+    }
+
+    .ronda {
+      position: absolute;
+      bottom: 40px;
+      left: -40px;
+      width: 40px;
+      height: 80px;
+      animation: patroli 22s linear infinite;
+    }
+
+    .ronda .badan {
+      position: absolute;
+      bottom: 0;
+      width: 40px;
+      height: 50px;
+      background: #0f9;
+      border-radius: 4px;
+    }
+
+    .ronda .kepala {
+      position: absolute;
+      bottom: 54px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #ffe0bd;
+    }
+
+    .ronda .tongkat {
+      position: absolute;
+      bottom: 10px;
+      right: -4px;
+      width: 6px;
+      height: 50px;
+      background: #caa472;
+    }
+
+    @keyframes patroli {
+      0% {
+        transform: translateX(-40px) scaleX(1);
+      }
+      49% {
+        transform: translateX(calc(100vw + 40px)) scaleX(1);
+      }
+      50% {
+        transform: translateX(calc(100vw + 40px)) scaleX(-1);
+      }
+      99% {
+        transform: translateX(-40px) scaleX(-1);
+      }
+      100% {
+        transform: translateX(-40px) scaleX(1);
+      }
+    }
+
+    h1 {
+      text-align: center;
+      color: #fff;
+      margin-top: 120px;
+      font-size: 1.8em;
+    }
+
+    table {
+      width: 95%;
+      max-width: 700px;
+      margin: 20px auto;
+      border-collapse: collapse;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      backdrop-filter: blur(5px);
+    }
+
+    th, td {
+      padding: 12px 15px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      text-align: left;
+    }
+
+    th {
+      background-color: rgba(0, 100, 0, 0.8);
+      color: white;
+      text-align: center;
+    }
+
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    tr {
+      transition: background-color 0.3s ease;
+    }
+
+    td ul {
+      padding-left: 18px;
+      margin: 0;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    td li {
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Latar belakang -->
+  <div class="bulan"></div>
+  <div class="kampung"></div>
+  <div class="ronda">
+    <div class="kepala"></div>
+    <div class="badan"></div>
+    <div class="tongkat"></div>
+  </div>
+
+  <!-- Judul -->
+  <h1>Jadwal Ronda Malam</h1>
+
+  <!-- Tabel -->
+  <table>
+    <thead>
+      <tr>
+        <th>Hari</th>
+        <th>Petugas Ronda</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Malam Senin</td>
+        <td><ul><li>Budi</li><li>Andi</li><li>Badul</li><li>Jaja</li><li>Wisnu</li><li>Restu</li><li>Amar</li><li>Karta</li><li>Pura</li><li>Jalu</li></ul></td>
+      </tr>
+      <tr><td>Malam Selasa</td><td><ul><li>Rudi</li><li>Denis</li></ul></td></tr>
+      <tr><td>Malam Rabu</td><td><ul><li>Parjamban</li><li>Kecep</li><li>Dedi</li></ul></td></tr>
+      <tr><td>Malam Kamis</td><td><ul><li>Ujang</li><li>Dani</li></ul></td></tr>
+      <tr><td>Malam Jumat</td><td><ul><li>Aldi</li><li>Perdana</li><li>Fajar</li><li>Yusuf</li></ul></td></tr>
+      <tr><td>Malam Sabtu</td><td><ul><li>Asep</li><li>Jaka</li></ul></td></tr>
+      <tr><td>Malam Minggu</td><td><ul><li>Bombom</li><li>Reza</li><li>Adut</li></ul></td></tr>
+    </tbody>
+  </table>
+
+  <!-- Footer -->
+  <footer>
+    &copy; <span id="tahun"></span> Kampung Pameutingan
+  </footer>
+
+  <!-- Bintang & Pohon -->
+  <script>
+    // Bintang
+    for (let i = 0; i < 120; i++) {
+      const b = document.createElement('div');
+      b.className = 'bintang';
+      b.style.left = Math.random() * innerWidth + 'px';
+      b.style.top = Math.random() * innerHeight + 'px';
+      b.style.opacity = Math.random();
+      b.style.animationDuration = (Math.random() * 3 + 3) + 's';
+      document.body.appendChild(b);
+    }
+
+    // Pohon
+    const pohonCount = 15;
+    const zona = document.querySelector('.kampung');
+    for (let i = 0; i < pohonCount; i++) {
+      const p = document.createElement('div');
+      p.className = 'pohon';
+      p.style.left = Math.floor(i * (100 / pohonCount) + Math.random() * 4) + 'vw';
+      p.style.height = (40 + Math.random() * 40) + 'px';
+      p.style.transform = `scale(${0.8 + Math.random() * 0.6})`;
+      zona.appendChild(p);
+    }
+
+    // Tahun Otomatis
+    document.getElementById('tahun').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

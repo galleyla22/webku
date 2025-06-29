@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Struktur Organisasi Kampung</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      text-align: center;
+      background-color: #2e7d32;
+      color: white;
+      padding: 2rem 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .tree {
+      display: flex;
+      justify-content: center;
+      padding: 40px 10px;
+    }
+
+    .tree ul {
+      padding-top: 20px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .tree ul::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      border-left: 2px solid #ccc;
+      height: 20px;
+    }
+
+    .tree li {
+      list-style-type: none;
+      text-align: center;
+      position: relative;
+      margin: 0 20px;
+      padding: 20px 5px 0 5px;
+      transition: all 0.3s ease;
+    }
+
+    .tree li::before, .tree li::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      border-top: 2px solid #ccc;
+      width: 50%;
+      height: 20px;
+    }
+
+    .tree li::before {
+      right: 50%;
+      border-right: 2px solid #ccc;
+    }
+
+    .tree li::after {
+      left: 50%;
+      border-left: 2px solid #ccc;
+    }
+
+    .tree li:only-child::before,
+    .tree li:only-child::after {
+      display: none;
+    }
+
+    .tree li:first-child::before,
+    .tree li:last-child::after {
+      border: none;
+    }
+
+    .node {
+      display: inline-block;
+      border: 2px solid #4caf50;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: white;
+      color: #333;
+      font-weight: bold;
+      min-width: 160px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .node:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .node small {
+      display: block;
+      font-weight: normal;
+      color: #555;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .tree ul {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .tree li::before,
+      .tree li::after,
+      .tree ul::before {
+        display: none;
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #eee;
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Struktur Organisasi Kampung Pameutingan</h1>
+</header>
+
+<section class="tree">
+  <ul>
+    <li>
+      <div class="node">
+        KETUA RW
+        <small> </small>
+      </div>
+      <ul>
+        <li>
+          <div class="node">
+            KETUA RT
+            <small> </small>
+          </div>
+          <ul>
+            <li>
+              <div class="node">
+                RT.01
+                <small> </small>
+              </div>
+            </li>
+            <li>
+              <div class="node">
+                RT.02
+                <small> </small>
+              </div>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <div class="node">
+            KETUA PEMUDA
+            <small> </small>
+          </div>
+        </li>
+        <li>
+          <div class="node">
+            KETUA VOLI
+            <small> </small>
+          </div>
+        </li>
+        <li>
+          <div class="node">
+            Kepala Dusun I
+            <small> </small>
+          </div>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</section>
+
+<footer>
+  &copy; <span id="year"></span> Pemerintahan Kampung Pameutingan
+</footer>
+
+<script>
+  // Mengisi tahun secara otomatis
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
