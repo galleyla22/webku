@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Galeri Foto Kampung Pameutingan</title>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <style>
+    body { font-family: 'Poppins', sans-serif; margin: 0; background: #f0f2f5; color: #333; }
+    header { background: linear-gradient(to right, #00695c, #004d40); color: white; padding: 1.5rem; text-align: center; }
+    nav { background: #004d40; padding: 0.75rem; text-align: center; }
+    nav a { color: white; margin: 0 12px; text-decoration: none; font-weight: 600; }
+    .filter-buttons { text-align: center; margin: 1rem 0; }
+    .filter-buttons button {
+      background: #009688; color: white; border: none; padding: 8px 16px; margin: 4px;
+      border-radius: 25px; cursor: pointer;
+    }
+    .upload-area {
+      max-width: 600px; margin: 2rem auto; background: white;
+      padding: 1rem; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .upload-area input, .upload-area select, .upload-area button {
+      width: 100%; margin: 8px 0; padding: 10px; font-size: 1rem;
+    }
+    .gallery {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px; padding: 1rem;
+    }
+    .photo {
+      position: relative; overflow: hidden; border-radius: 10px;
+      background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .photo img { width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
+    .delete-btn {
+      position: absolute; top: 5px; right: 5px; background: red; color: white;
+      border: none; border-radius: 50%; width: 25px; height: 25px;
+      display: none; justify-content: center; align-items: center;
+      font-size: 14px; cursor: pointer;
+    }
+    #loader { text-align: center; margin-top: 10px; display: none; }
+    .spinner {
+      border: 4px solid #ccc; border-top: 4px solid #00897b; border-radius: 50%;
+      width: 30px; height: 30px; animation: spin 1s linear infinite; margin: auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Lightbox / Popup */
+    #lightbox {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); display: none;
+      align-items: center; justify-content: center; z-index: 1000;
+    }
+    #lightbox img {
+      max-width: 90%; max-height: 90%;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+    #lightbox:hover img {
+      transform: scale(1.02);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Galeri Foto Kampung Pameutingan</h1>
+  <p>Upload & hapus hanya untuk admin</p>
+</header>
+
+<nav>
+  <a href="index.html">Beranda</a>
+</nav>
+
+<div class="filter-buttons">
+  <button data-filter="all" class="active">Semua</button>
+  <button data-filter="17-Agustus">17-Agustus</button>
+  <button data-filter="Voli">Voli</button>
+  <button data-filter="Kegiatan Masyarakat">Kegiatan Masyarakat</button>
+</div>
+
+<section class="upload-area">
+  <h2>Tambah Foto (Admin)</h2>
+  <input type="password" id="passwordInput" placeholder="Masukkan sandi admin">
+  <button id="verifyBtn">Verifikasi</button>
+  <p id="adminStatus" style="text-align:center; font-weight:bold;"></p>
+  <select id="kategoriSelect" disabled>
+    <option value="">Pilih Kategori</option>
+    <option value="17-Agustus">17-Agustus</option>
+    <option value="Voli">Voli</option>
+    <option value="Kegiatan Masyarakat">Kegiatan Masyarakat</option>
+  </select>
+  <input type="file" id="uploadInput" accept="image/*" multiple disabled>
+  <div id="loader"><div class="spinner"></div></div>
+  <div id="preview"></div>
+</section>
+
+<main class="gallery"></main>
+
+<footer style="text-align:center;background:#004d40;color:white;padding:1rem;">
+  <p>&copy; 2025 Kampung Pameutingan</p>
+</footer>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="this.style.display='none'">
+  <img src="" alt="popup">
+</div>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDQ-7xsGhjQ1fxMhFCZQctVpGsobN2Q7zs",
+    authDomain: "galleri-ku.firebaseapp.com",
+    projectId: "galleri-ku",
+    storageBucket: "galleri-ku.appspot.com",
+    messagingSenderId: "312570653219",
+    appId: "1:312570653219:web:63bd9aa84a78bb8b991f96"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const CLOUD_NAME = "galeri-ku";
+  const UPLOAD_PRESET = "galeri-ku";
+
+  const kategoriSelect = document.getElementById("kategoriSelect");
+  const uploadInput = document.getElementById("uploadInput");
+  const gallery = document.querySelector(".gallery");
+  const verifyBtn = document.getElementById("verifyBtn");
+  const passwordInput = document.getElementById("passwordInput");
+  const loader = document.getElementById("loader");
+  const preview = document.getElementById("preview");
+  const adminStatus = document.getElementById("adminStatus");
+  let adminMode = false;
+
+  verifyBtn.onclick = () => {
+    if (passwordInput.value.trim() === "1112") {
+      adminMode = true;
+      kategoriSelect.disabled = false;
+      uploadInput.disabled = false;
+      adminStatus.textContent = "✔ Admin mode aktif";
+      document.querySelectorAll(".delete-btn").forEach(btn => btn.style.display = "flex");
+    } else {
+      alert("Sandi salah.");
+    }
+  };
+
+  async function uploadKeCloudinary(file) {
+    const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", UPLOAD_PRESET);
+
+    try {
+      const res = await fetch(url, { method: "POST", body: formData });
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error("Gagal Cloudinary:", errText);
+        return null;
+      }
+      const data = await res.json();
+      return data.secure_url;
+    } catch (err) {
+      console.error("Error upload:", err);
+      return null;
+    }
+  }
+
+  uploadInput.addEventListener("change", async () => {
+    const kategori = kategoriSelect.value;
+    if (!kategori) return alert("Pilih kategori dulu.");
+
+    const files = Array.from(uploadInput.files);
+    loader.style.display = "block";
+    preview.innerHTML = "";
+
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) continue;
+
+      const thumb = document.createElement("img");
+      thumb.src = URL.createObjectURL(file);
+      thumb.style.width = "50px";
+      thumb.style.margin = "5px";
+      preview.appendChild(thumb);
+
+      const url = await uploadKeCloudinary(file);
+      if (url) {
+        try {
+          const docRef = await db.collection("foto").add({
+            url: url,
+            kategori: kategori,
+            waktu: Date.now()
+          });
+          tampilkanFoto(docRef.id, url, kategori);
+        } catch (err) {
+          console.error("Gagal simpan Firestore:", err);
+          alert("Upload ke Cloudinary berhasil, tapi gagal simpan ke Firestore.");
+        }
+      } else {
+        alert("Upload gagal (Cloudinary).");
+      }
+    }
+
+    loader.style.display = "none";
+    uploadInput.value = "";
+  });
+
+  function tampilkanFoto(id, url, kategori) {
+    const kategoriKelas = kategori.replace(/\s+/g, "-");
+    const div = document.createElement("div");
+    div.className = `photo ${kategoriKelas}`;
+    div.dataset.id = id;
+
+    const img = document.createElement("img");
+    img.src = url;
+    img.onclick = () => {
+      document.getElementById("lightbox").style.display = "flex";
+      document.querySelector("#lightbox img").src = url;
+    };
+
+    const del = document.createElement("button");
+    del.className = "delete-btn";
+    del.textContent = "×";
+    if (adminMode) del.style.display = "flex";
+
+    del.onclick = async () => {
+      if (confirm("Yakin hapus foto ini?")) {
+        await db.collection("foto").doc(id).delete();
+        div.remove();
+      }
+    };
+
+    div.appendChild(img);
+    div.appendChild(del);
+    gallery.appendChild(div);
+  }
+
+  async function loadFoto() {
+    const snapshot = await db.collection("foto").orderBy("waktu", "desc").get();
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      tampilkanFoto(doc.id, data.url, data.kategori);
+    });
+  }
+
+  loadFoto();
+
+  document.querySelectorAll(".filter-buttons button").forEach(btn => {
+    btn.onclick = () => {
+      const filter = btn.dataset.filter.replace(/\s+/g, "-");
+      document.querySelectorAll(".filter-buttons button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelectorAll(".photo").forEach(photo => {
+        photo.style.display = (filter === "all" || photo.classList.contains(filter)) ? "block" : "none";
+      });
+    };
+  });
+</script>
+
+</body>
+</html>
